@@ -17,11 +17,11 @@ namespace GardenHub.Repository.Mapping
             builder.Property(x => x.Text).IsRequired().HasMaxLength(500);
             builder.Property(x => x.Owner).IsRequired();
 
-            //
-            //builder.HasOne(x => x.Post).WithMany(x => x.Comments);
-
             // Many COMMENTS to One POST
             builder.HasOne<Domain.Post.Post>(x => x.Post);
+
+            // Forget this code below
+            //builder.HasOne(x => x.Post).WithMany(x => x.Comments);
         }
     }
 }

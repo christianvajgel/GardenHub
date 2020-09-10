@@ -15,6 +15,9 @@ namespace GardenHub.Domain.Comment
         [JsonIgnore]
         public virtual Domain.Post.Post Post { get; set; }
 
+
+        // Forget this code below
+
         //public Domain.Post.Post Post { get; set; }
 
         // Reference POST to COMMENT

@@ -62,9 +62,6 @@ namespace GardenHub.Web
             services.AddIdentity<Account, Role>()
                 .AddDefaultTokenProviders();
 
-            //services.AddIdentity<Post, Account>().AddEntityFrameworkStores();
-            //services.AddIdentity<Comment, Post>().AddDefaultTokenProviders();
-
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";

@@ -27,8 +27,10 @@ namespace GardenHub.Domain.Post
         // Reference POST to COMMENTS
         public virtual IList<Domain.Comment.Comment> Comments { get; set; }
 
-        //public List<Domain.Comment.Comment> Comments { get; set; }
 
+        // Forget this code below
+
+        //public List<Domain.Comment.Comment> Comments { get; set; }
 
         //public Domain.Account.Account Account { get; set; }
 
