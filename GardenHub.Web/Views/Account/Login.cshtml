@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+@model GardenHub.Web.ViewModel.Account.LoginViewModel
+<div class="text-center">
+    <h1 class="display-4">Garden Hub</h1>
+</div>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+<form asp-action="Login" asp-controller="Account" method="post" asp-route-returnurl="@ViewBag.ReturnUrl">
+    <div class="form-group">
+        <label asp-for="UserName">Username</label>
+        <input type="text" asp-for="UserName" class="form-control" placeholder="Username">
+    </div>
+    <div class="form-group">
+        <label asp-for="Password">Password</label>
+        <input type="password" asp-for="Password" class="form-control" placeholder="Password">
+    </div>
+    <div style="display: flex;">
+        <div style="margin: 5px;">
+            <button type="submit" class="btn-sm btn-dark">Entrar</button>
+        </div>
+        <div style="margin: 5px;">
+            <a asp-action="Create" class="btn-sm btn-outline-dark">Criar conta</a>
+        </div>
+    </div>
+</form>

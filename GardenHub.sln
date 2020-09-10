@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Web", "GardenHub.Web\GardenHub.Web.csproj", "{15268B58-19E6-4BD6-8AD0-C28A4649F6BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.API", "GardenHub.API\GardenHub.API.csproj", "{FFF43853-747A-470F-B5E7-E9F8ABBE90EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Repository", "GardenHub.Repository\GardenHub.Repository.csproj", "{CCACCB7F-DF12-4A43-BB2A-9818D5F72CEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Services", "GardenHub.Services\GardenHub.Services.csproj", "{0EBC513F-588C-446E-B152-C73E6B4E977D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Domain", "GardenHub.Domain\GardenHub.Domain.csproj", "{A01E8FA0-BE26-40B2-B597-39A26E3C2C4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.CrossCutting", "GardenHub.CrossCutting\GardenHub.CrossCutting.csproj", "{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15268B58-19E6-4BD6-8AD0-C28A4649F6BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15268B58-19E6-4BD6-8AD0-C28A4649F6BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15268B58-19E6-4BD6-8AD0-C28A4649F6BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15268B58-19E6-4BD6-8AD0-C28A4649F6BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFF43853-747A-470F-B5E7-E9F8ABBE90EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF43853-747A-470F-B5E7-E9F8ABBE90EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFF43853-747A-470F-B5E7-E9F8ABBE90EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFF43853-747A-470F-B5E7-E9F8ABBE90EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCACCB7F-DF12-4A43-BB2A-9818D5F72CEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCACCB7F-DF12-4A43-BB2A-9818D5F72CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCACCB7F-DF12-4A43-BB2A-9818D5F72CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCACCB7F-DF12-4A43-BB2A-9818D5F72CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EBC513F-588C-446E-B152-C73E6B4E977D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EBC513F-588C-446E-B152-C73E6B4E977D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EBC513F-588C-446E-B152-C73E6B4E977D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EBC513F-588C-446E-B152-C73E6B4E977D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A01E8FA0-BE26-40B2-B597-39A26E3C2C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A01E8FA0-BE26-40B2-B597-39A26E3C2C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A01E8FA0-BE26-40B2-B597-39A26E3C2C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A01E8FA0-BE26-40B2-B597-39A26E3C2C4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B15A3715-1503-434E-A14D-5BA1FD20ECD4}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,10 @@
+﻿/* PostController -> Home -> POST CARD */
+
+.postContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.postDivButtons {
+    display: flex;
+}

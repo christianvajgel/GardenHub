@@ -1,0 +1,80 @@
+﻿@model GardenHub.Domain.Post.Post
+
+@{
+    ViewData["Title"] = "Edit Post";
+}
+
+<h1>Edit</h1>
+
+<h4>Post</h4>
+<hr />
+<div class="row">
+
+    <h3>Old Post:</h3>
+
+    <div class="card" style="width: 30rem;">
+        <img class="card-img-top"
+             src="@Model.Image"
+             alt="Post image">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Description</h5>
+            <p class="card-text">@Model.Description</p>
+        </div>
+    </div>
+
+    <hr />
+
+    <h3>Edited Post:</h3>
+
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-controller="Post" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            @if (Model.Type == GardenHub.Domain.Post.PostType.Image || Model.Type == GardenHub.Domain.Post.PostType.ImageText)
+            {
+                <div class="form-group">
+                    <label>Image</label>
+                    <input type="file" class="form-control" placeholder="file" name="file" id="file" required="required">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" required="required" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            }
+            else if (Model.Type == GardenHub.Domain.Post.PostType.Text)
+            {
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" required="required" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            }
+
+            @*<div class="form-group">
+                <label>Image</label>
+                <input type="file" class="form-control" placeholder="file" name="file" id="file">
+            </div>*@
+
+            @*<div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>*@
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-outline-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
