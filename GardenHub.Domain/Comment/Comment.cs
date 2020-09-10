@@ -11,7 +11,7 @@ namespace GardenHub.Domain.Comment
         public string Text { get; set; }
         public Guid AccountOwnerId { get; set; }
         public DateTime PostedTime { get; set; }
-
+        //teste
         // Reference POST to COMMENTS
         [JsonIgnore]
         public virtual Domain.Post.Post Post { get; set; }
