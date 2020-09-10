@@ -73,7 +73,5 @@ namespace GardenHub.Repository.Post
             await this.Context.SaveChangesAsync();
             return IdentityResult.Success;
         }
-
-
     }
 }

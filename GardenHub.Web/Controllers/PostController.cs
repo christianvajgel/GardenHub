@@ -195,6 +195,7 @@ namespace GardenHub.Web.Controllers
                 var post = this.PostServices.FindById(idFromRoute);
 
                 await this.PostServices.DeletePost(idFromRoute, account);
+                
                 //await this.PostServices.DeletePost(idFromRoute, await this.AccountService.FindById(new Guid(JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject")).ToString())));
 
                 if (post.Type == PostType.Image || post.Type == PostType.ImageText)

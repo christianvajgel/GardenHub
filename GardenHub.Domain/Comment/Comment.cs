@@ -9,7 +9,8 @@ namespace GardenHub.Domain.Comment
     {
         public Guid Id { get; set; }
         public string Text { get; set; }
-        public Guid Owner { get; set; }
+        public Guid AccountOwnerId { get; set; }
+        public DateTime PostedTime { get; set; }
 
         // Reference POST to COMMENTS
         [JsonIgnore]

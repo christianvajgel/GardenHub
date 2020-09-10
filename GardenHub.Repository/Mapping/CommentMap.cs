@@ -15,7 +15,8 @@ namespace GardenHub.Repository.Mapping
 
             builder.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.Text).IsRequired().HasMaxLength(500);
-            builder.Property(x => x.Owner).IsRequired();
+            builder.Property(x => x.AccountOwnerId).IsRequired();
+            builder.Property(x => x.PostedTime).IsRequired();
 
             // Many COMMENTS to One POST
             builder.HasOne<Domain.Post.Post>(x => x.Post);
