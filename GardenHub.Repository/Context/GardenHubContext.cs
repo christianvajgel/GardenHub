@@ -12,7 +12,6 @@ namespace GardenHub.Repository.Context
 
         public DbSet<Domain.Post.Post> Posts { get; set; }
         public DbSet<Domain.Comment.Comment> Comments { get; set; }
-        
 
         public static readonly ILoggerFactory _loggerFactory
                     = LoggerFactory.Create(builder => { builder.AddConsole(); });

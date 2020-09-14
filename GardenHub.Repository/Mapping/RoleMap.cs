@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GardenHub.Repository.Mapping
 {
-    class RoleMap : IEntityTypeConfiguration<Domain.Role>
+    public class RoleMap : IEntityTypeConfiguration<Domain.Role>
     {
         public void Configure(EntityTypeBuilder<Domain.Role> builder)
         {
