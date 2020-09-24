@@ -20,6 +20,7 @@ namespace GardenHub.Repository.Mapping
 
             // Many COMMENTS to One POST
             builder.HasOne<Domain.Post.Post>(x => x.Post);
+            
 
             // Forget this code below
             //builder.HasOne(x => x.Post).WithMany(x => x.Comments);
