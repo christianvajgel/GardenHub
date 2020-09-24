@@ -1,7 +1,10 @@
 ﻿using GardenHub.Domain.Comment.Repository;
 using GardenHub.Repository.Context;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GardenHub.Repository.Comment
@@ -15,28 +18,68 @@ namespace GardenHub.Repository.Comment
             this.Context = gardenHubContext;
         }
 
-        // CREATE
-        public Task<IdentityResult> CreateCommentAsync(Domain.Comment.Comment comment)
+
+        public IAsyncEnumerable<Domain.Comment.Comment> GetAll()
         {
-            throw new NotImplementedException();
+            //return Context.Posts.AsEnumerable();
+            return Context.Comments.Include(x => x.Post).AsAsyncEnumerable();
+        }
+
+        // CREATE
+        public async Task<IdentityResult> CreateCommentAsync(Domain.Comment.Comment comment)
+        {
+            comment.Id = Guid.NewGuid();
+            this.Context.Comments.Add(comment);
+            await this.Context.SaveChangesAsync();
+            return IdentityResult.Success;
         }
 
         // READ
-        public Task<IdentityResult> FindByIdAsync(Guid commentId)
+
+        public async Task<GardenHub.Domain.Comment.Comment> FindByIdAsync(Guid commentId)
         {
-            throw new NotImplementedException();
+            var comment = await this.Context.Comments.FirstOrDefaultAsync(x => x.Id == commentId);
+            return comment;
         }
 
-        // UPDATE
-        public Task<IdentityResult> UpdateCommentAsync(Domain.Comment.Comment comment)
+        public Domain.Comment.Comment FindById(Guid commentId)
         {
-            throw new NotImplementedException();
+            var comment = this.Context.Comments.FirstOrDefault(x => x.Id == commentId);
+            return comment;
+        }
+
+        /*public Task<GardenHub.Domain.Comment.Comment> FindAllByIdPost(Guid postId)
+        {
+            var comments = new List<GardenHub.Domain.Comment.Comment>();
+            foreach (var comment in this.Context.Comments.Where(x => x.Post.Id == postId))
+            {
+                comments.Add(comment);
+            }
+            return comments;
+        }*/
+
+        // UPDATE
+        public async Task<IdentityResult> UpdateCommentAsync(Guid id, Domain.Comment.Comment newComment)
+        {
+            var oldComment = FindById(id);
+
+            oldComment.Text = newComment.Text;
+
+            Context.Comments.Update(oldComment);
+            await this.Context.SaveChangesAsync();
+            return IdentityResult.Success;
         }
 
         // DELETE
-        public Task<IdentityResult> DeleteCommentAsync(Domain.Comment.Comment comment)
+        public async Task<IdentityResult> DeleteCommentAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var commentToDelete = FindById(id);
+            
+            this.Context.Comments.Remove(commentToDelete);
+            await this.Context.SaveChangesAsync();
+            return IdentityResult.Success;
         }
+
+
     }
 }

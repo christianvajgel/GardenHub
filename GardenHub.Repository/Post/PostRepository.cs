@@ -23,7 +23,7 @@ namespace GardenHub.Repository.Post
         public IAsyncEnumerable<Domain.Post.Post> GetAll()
         {
             //return Context.Posts.AsEnumerable();
-            return Context.Posts.AsAsyncEnumerable();
+            return Context.Posts.Include(x => x.Account).AsAsyncEnumerable();
         }
 
         // CREATE
@@ -37,7 +37,7 @@ namespace GardenHub.Repository.Post
         // READ
         public Domain.Post.Post FindById(Guid postId)
         {
-            return this.Context.Posts.FirstOrDefault(x => x.Id == postId);
+            return this.Context.Posts.Include(x => x.Comments).FirstOrDefault(x => x.Id == postId);
         }
 
         // UPDATE
@@ -69,6 +69,15 @@ namespace GardenHub.Repository.Post
             //var post = this.Context.Find<Domain.Post.Post>(postId);
             var post = FindById(postId);
             post.Account = account;
+
+            if (post.Comments != null)
+            {
+                foreach (var item in post.Comments)
+                {
+                    Context.Comments.Remove(item);
+                }
+            }
+
             this.Context.Posts.Remove(post);
             await this.Context.SaveChangesAsync();
             return IdentityResult.Success;

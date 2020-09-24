@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GardenHub.Domain.Post.Post>
+﻿@model GardenHub.Web.ViewModel.Post.HomePostViewModel
 
 @{
     ViewData["Title"] = "Home";
@@ -11,7 +11,7 @@
 </p>
 
 <div>
-    @foreach (var post in Model)
+    @foreach (var post in Model.Posts)
     {
 
 
@@ -25,21 +25,39 @@
                 <div class="card-body">
                     <h5 class="card-title">@Html.DisplayFor(modelItem => post.Description)</h5>
                     <p class="card-text">@Html.DisplayFor(modelItem => post.Description)</p>
+                    @if (Model.Account.Id == post.Account.Id)
+                    {
 
-                    <div class="postContainer">
-                        <div class="postDivButtons">
-                            <form method="get" asp-action="Edit" asp-controller="Post" asp-route-id="@post.Id">
-                                <input type="hidden" asp-for="@post.Id" />
-                                <input type="submit" value="Edit" class="btn btn-outline-warning" />
-                            </form>
+                        <div class="postContainer">
+                            <div class="postDivButtons">
+                                <form method="get" asp-action="Edit" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="Edit" class="btn btn-outline-warning" />
+                                </form>
+                                <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="CreateComment" class="btn btn-outline-warning" />
+                                </form>
+                            </div>
+                            <div class="postDivButtons">
+                                <form method="post" asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="Delete" class="btn btn-outline-danger" />
+                                </form>
+                            </div>
                         </div>
-                        <div class="postDivButtons">
-                            <form method="post" asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">
-                                <input type="hidden" asp-for="@post.Id" />
-                                <input type="submit" value="Delete" class="btn btn-outline-danger" />
-                            </form>
+                    }
+                    else
+                    {
+                        <div class="postContainer">
+                            <div class="postDivButtons">
+                                <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="CreateComment" class="btn btn-outline-warning" />
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    }
 
                 </div>
             </div>
@@ -78,34 +96,36 @@
 
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@*
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Image)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Image)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Image)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    *@

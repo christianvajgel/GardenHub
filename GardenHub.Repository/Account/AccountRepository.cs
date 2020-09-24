@@ -40,9 +40,10 @@ namespace GardenHub.Repository.Account
             return user;
         }
 
-        public Task<Domain.Account.Account> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<Domain.Account.Account> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var user = await Context.Accounts.FirstOrDefaultAsync(x => x.Id == Guid.Parse(userId));
+            return user;
         }
 
         public Task<Domain.Account.Account> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)

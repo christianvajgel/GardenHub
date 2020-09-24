@@ -5,9 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using GardenHub.CrossCutting.Storage;
 using GardenHub.Domain.Account;
+using GardenHub.Domain.Comment;
 using GardenHub.Domain.Post;
 using GardenHub.Services.Account;
+using GardenHub.Services.Comment;
 using GardenHub.Services.Post;
+using GardenHub.Web.ViewModel.Post;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +21,22 @@ namespace GardenHub.Web.Controllers
     public class PostController : Controller
     {
         private IAccountService AccountService { get; set; }
-
         private IPostServices PostServices { get; set; }
+        private ICommentServices CommentServices { get; set; }
 
         private AzureStorage AzureStorage { get; set; }
 
-        public PostController(IAccountService accountService, IPostServices postServices, AzureStorage azureStorage)
+        public PostController(IAccountService accountService, IPostServices postServices, ICommentServices commentServices, AzureStorage azureStorage)
         //public PostController(IPostServices postServices)
         {
             this.AccountService = accountService;
 
             this.PostServices = postServices;
 
+            this.CommentServices = commentServices;
+
             this.AzureStorage = azureStorage;
+
         }
 
         [Authorize]
@@ -39,10 +45,25 @@ namespace GardenHub.Web.Controllers
             try
             {
                 var user = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject")).ToString();
+                var account = await this.AccountService.FindById(new Guid(user.ToString()));
 
+                var listAllPosts = this.PostServices.GetAll();
+                var posts = new List<Post>();
+
+                await foreach (var post in listAllPosts)
+                {
+                    posts.Add(post);
+
+                }
+
+                var homeViewModel = new HomePostViewModel()
+                {
+                    Posts = posts,
+                    Account = account
+                };
                 //this.PostServices.GetAll();
                 //return View(await AccountService.FindById(new Guid(user)));
-                return View(this.PostServices.GetAll());
+                return View(homeViewModel);
             }
             catch
             {
@@ -210,5 +231,84 @@ namespace GardenHub.Web.Controllers
                 return Redirect("/");
             }
         }
+
+        public async Task<ActionResult> CreateCommentAsync()
+        {
+            var user = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject")).ToString();
+            var idFromRoute = new Guid(RouteData.Values["id"].ToString());
+            var post = this.PostServices.FindById(idFromRoute);
+            var listAllComment = this.CommentServices.GetAll();
+            var comments = new List<Comment>();
+            var account = await this.AccountService.FindById(new Guid(user.ToString()));
+
+            if(listAllComment != null)
+            {
+
+            await foreach (var comment in listAllComment)
+            {
+                if(comment.Post.Id == post.Id)
+                {
+                    comments.Add(comment);
+                }
+                
+            }
+
+            }
+
+            var postViewModel = new PostViewModel()
+            {
+                Comments = comments,
+                Account = account
+            };
+            return View(postViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateComment(Guid id, Comment comment)
+        {
+            try
+            {
+                if (ModelState.IsValid == false)
+                    return View(comment);
+
+                var account = new Account();
+                var user = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject"));
+                account = await this.AccountService.FindById(new Guid(user.ToString()));
+
+                var post = PostServices.FindById(id);
+
+                comment.AccountOwnerId = account.Id;
+                comment.PostedTime = DateTime.UtcNow;
+                comment.Post = post;
+                await CommentServices.SaveComment(comment);
+
+                return RedirectToAction("CreateComment");
+            }
+            catch (System.Exception ex)
+            {
+                ModelState.AddModelError("APP_ERROR", ex.Message);
+                return View(comment);
+            }
+        }
+
+
+        public ActionResult EditComment()
+        {
+            var id = new Guid(RouteData.Values["id"].ToString());
+            return Redirect("../../Comment/Edit/" + id);
+        }
+
+        public ActionResult DeleteComment()
+        {
+            var id = new Guid(RouteData.Values["id"].ToString());
+            return Redirect("../../Comment/Delete/" + id);
+        }
+
+        public ActionResult DetailComment()
+        {
+            return RedirectToAction("Detail", "Comment");
+        }
+
     }
 }
