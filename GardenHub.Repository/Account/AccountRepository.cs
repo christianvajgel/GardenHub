@@ -6,6 +6,8 @@ using GardenHub.Repository.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using GardenHub.Domain.Account.Repository;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace GardenHub.Repository.Account
 {
@@ -18,6 +20,11 @@ namespace GardenHub.Repository.Account
         public AccountRepository(GardenHubContext gardenHubContext)
         {
             this.Context = gardenHubContext;
+        }
+
+        public IEnumerable<Domain.Account.Account> GetAll() 
+        {
+            return Context.Accounts.AsEnumerable();
         }
 
         public async Task<IdentityResult> CreateAsync(Domain.Account.Account user, CancellationToken cancellationToken)

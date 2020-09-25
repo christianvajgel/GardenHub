@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Web", "GardenHub.Web\GardenHub.Web.csproj", "{15268B58-19E6-4BD6-8AD0-C28A4649F6BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GardenHub.Web", "GardenHub.Web\GardenHub.Web.csproj", "{15268B58-19E6-4BD6-8AD0-C28A4649F6BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.API", "GardenHub.API\GardenHub.API.csproj", "{FFF43853-747A-470F-B5E7-E9F8ABBE90EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GardenHub.API", "GardenHub.API\GardenHub.API.csproj", "{FFF43853-747A-470F-B5E7-E9F8ABBE90EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Repository", "GardenHub.Repository\GardenHub.Repository.csproj", "{CCACCB7F-DF12-4A43-BB2A-9818D5F72CEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GardenHub.Repository", "GardenHub.Repository\GardenHub.Repository.csproj", "{CCACCB7F-DF12-4A43-BB2A-9818D5F72CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Services", "GardenHub.Services\GardenHub.Services.csproj", "{0EBC513F-588C-446E-B152-C73E6B4E977D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GardenHub.Services", "GardenHub.Services\GardenHub.Services.csproj", "{0EBC513F-588C-446E-B152-C73E6B4E977D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Domain", "GardenHub.Domain\GardenHub.Domain.csproj", "{A01E8FA0-BE26-40B2-B597-39A26E3C2C4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GardenHub.Domain", "GardenHub.Domain\GardenHub.Domain.csproj", "{A01E8FA0-BE26-40B2-B597-39A26E3C2C4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.CrossCutting", "GardenHub.CrossCutting\GardenHub.CrossCutting.csproj", "{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GardenHub.CrossCutting", "GardenHub.CrossCutting\GardenHub.CrossCutting.csproj", "{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GardenHub.Token", "GardenHub.Token\GardenHub.Token.csproj", "{17540A0A-1A32-46E8-808F-16623D174292}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6DBFD66-B190-42A4-AC3D-7AAF07BC5C65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17540A0A-1A32-46E8-808F-16623D174292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17540A0A-1A32-46E8-808F-16623D174292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17540A0A-1A32-46E8-808F-16623D174292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17540A0A-1A32-46E8-808F-16623D174292}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

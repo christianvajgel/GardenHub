@@ -22,6 +22,9 @@ using GardenHub.Repository.Comment;
 using GardenHub.Domain.Post;
 using GardenHub.Domain.Comment;
 using GardenHub.CrossCutting.Storage;
+using GardenHub.Services.Authenticate;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GardenHub.Web
 {
@@ -50,7 +53,24 @@ namespace GardenHub.Web
             services.AddTransient<ICommentServices, CommentServices>();
             services.AddTransient<ICommentRepository, CommentRepository>();
 
-            //Azure Blob Storage Configuration
+            services.AddTransient<AccountRepository>();
+
+            // JWT
+            services.AddTransient<AuthenticateService>();
+
+            var key = Encoding.UTF8.GetBytes(this.Configuration["Token:Secret"]);
+
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultScheme = "Bearer";
+            }).AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters.ValidIssuer = "LOGIN-API";
+                o.TokenValidationParameters.ValidAudience = "LOGIN-API";
+                o.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(key);
+            });
+
+            // Azure Blob Storage Configuration
             services.AddTransient<AzureStorage>();
             services.Configure<AzureStorageOptions>(Configuration.GetSection("Microsoft.Storage"));
 
@@ -96,7 +116,9 @@ namespace GardenHub.Web
 
             app.UseSession();
 
+            // JWT
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

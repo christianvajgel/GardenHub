@@ -16,7 +16,6 @@ namespace GardenHub.Services.Account
         {
             this.Repository = accountRepository;
             this.SignInManager = signInManager;
-
         }
 
         public async Task<SignInResult> Login(string userName, string password)
