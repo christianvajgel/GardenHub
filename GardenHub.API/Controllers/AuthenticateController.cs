@@ -11,8 +11,6 @@ namespace GardenHub.API.Controllers
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
-       // TESTE
-
 
     }
 }
