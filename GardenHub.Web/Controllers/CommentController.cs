@@ -77,12 +77,12 @@ namespace GardenHub.Web.Controllers
         // POST: Comment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, Domain.Comment.Comment commentOld)
+        public async Task<ActionResult> EditAsync(Guid id, Domain.Comment.Comment comment)
         {
             try
             {
                 //var comment = this.CommentServices.FindById(id);
-                CommentServices.EditComment(id, commentOld);
+                await CommentServices.EditComment(id, comment);
 
                 return Redirect("../../post/Home");
             }
