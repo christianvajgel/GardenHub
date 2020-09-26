@@ -31,5 +31,7 @@ namespace GardenHub.Domain.Account.Repository
 
         // Login User - USERNAME and PASSWORD
         Task<Domain.Account.Account> GetAccountByUserNamePassword(string userName, string password);
+
+        IEnumerable<Domain.Account.Account> GetAll();
     }
 }

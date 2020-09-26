@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GardenHub.CrossCutting\GardenHub.CrossCutting.csproj" />
     <ProjectReference Include="..\GardenHub.Services\GardenHub.Services.csproj" />
+    <ProjectReference Include="..\GardenHub.Token\GardenHub.Token.csproj" />
   </ItemGroup>
 
 

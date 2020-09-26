@@ -25,7 +25,7 @@ namespace GardenHub.API.Controllers
             if (!ModelState.IsValid)
                 return await Task.FromResult(BadRequest(ModelState));
 
-            var token = this.AuthenticateService.AuthenticateUser(loginViewModel.UserName, loginViewModel.Password);
+            var token = this.AuthenticateService.AuthenticateUser(loginViewModel.Email, loginViewModel.Password);
 
             if (String.IsNullOrWhiteSpace(token))
             {

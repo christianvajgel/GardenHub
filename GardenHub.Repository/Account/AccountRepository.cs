@@ -6,7 +6,6 @@ using GardenHub.Repository.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using GardenHub.Domain.Account.Repository;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace GardenHub.Repository.Account

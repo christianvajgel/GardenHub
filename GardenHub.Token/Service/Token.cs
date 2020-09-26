@@ -10,7 +10,7 @@ namespace GardenHub.Token.Service
         {
             var client = new RestClient();
 
-            var requestToken = new RestRequest("https://localhost:5001/api/authenticate/token");
+            var requestToken = new RestRequest("https://localhost:5003/api/authenticate/token");
 
             requestToken.AddJsonBody(JsonConvert.SerializeObject(new
             {

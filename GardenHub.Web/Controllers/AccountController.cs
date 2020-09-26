@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using GardenHub.Services.Account;
 using GardenHub.Web.ViewModel.Account;
 using Microsoft.AspNetCore.Authorization;
+using RestSharp;
 
 namespace GardenHub.Web.Controllers
 {
@@ -118,11 +119,17 @@ namespace GardenHub.Web.Controllers
         {
             try
             {
-                var result = await this.AccountIdentityManager.Login(model.UserName, model.Password);
+                var result = await this.AccountIdentityManager.Login(model.Email, model.Password);
                 if (result.Succeeded)
                 {
-                    var userToSave = await this.AccountService.GetAccountByUserNamePassword(model.UserName, model.Password);
-                    this.HttpContext.Session.SetString("UserObject", JsonConvert.SerializeObject(userToSave.Id));
+                    var client = new RestClient();
+                    var requestAccount = new RestRequest("https://localhost:5003/api/account/getbyemail/" + model.Email);
+                    requestAccount.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(model.Email, model.Password));
+                    var account = client.Get<Account>(requestAccount).Data;
+
+                    this.HttpContext.Session.SetString("UserId", JsonConvert.SerializeObject(account.Id));
+                    this.HttpContext.Session.SetString("UserEmail", JsonConvert.SerializeObject(account.Email));
+                    this.HttpContext.Session.SetString("UserPassword", JsonConvert.SerializeObject(account.Password));
                 }
                 else
                 {

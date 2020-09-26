@@ -41,5 +41,10 @@ namespace GardenHub.Services.Account
         {
             return await AccountRepository.DeleteAsync(user, default);
         }
+
+        public IEnumerable<Domain.Account.Account> GetAll() 
+        {
+            return AccountRepository.GetAll();
+        }
     }
 }

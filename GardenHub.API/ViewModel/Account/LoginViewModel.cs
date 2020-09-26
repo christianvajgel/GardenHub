@@ -8,8 +8,8 @@ namespace GardenHub.API.ViewModel.Account
 {
     public class LoginViewModel
     {
-        [Display(Name = "Username")]
-        public String UserName { get; set; }
+        [Display(Name = "Email")]
+        public String Email { get; set; }
         [Display(Name = "Password")]
         public String Password { get; set; }
     }

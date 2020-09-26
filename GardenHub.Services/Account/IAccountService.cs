@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
@@ -26,5 +27,7 @@ namespace GardenHub.Services.Account
 
         // Login User - USERNAME and PASSWORD
         Task<Domain.Account.Account> GetAccountByUserNamePassword(string userName, string password);
+
+        IEnumerable<Domain.Account.Account> GetAll();
     }
 }

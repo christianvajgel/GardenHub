@@ -1,4 +1,5 @@
 ﻿using GardenHub.Domain.Post.Repository;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,9 +15,9 @@ namespace GardenHub.Services.Post
             this.PostRepository = postRepository;
         }
 
-        public async Task SavePost(Domain.Post.Post post)
+        public async Task<IdentityResult> SavePost(Domain.Post.Post post)
         {
-            await PostRepository.CreatePostAsync(post);
+            return await PostRepository.CreatePostAsync(post);
         }
 
         public Domain.Post.Post FindById(Guid id) 
@@ -24,17 +25,20 @@ namespace GardenHub.Services.Post
             return PostRepository.FindById(id);
         }
 
-        public async Task EditPost(Guid postId, Domain.Post.Post newPost)
+        //public async Task EditPost(Guid postId, Domain.Post.Post newPost)
+        public async Task<IdentityResult> EditPost(Domain.Post.Post newPost)
         {
-            await PostRepository.UpdatePostAsync(postId, newPost);
+            return await PostRepository.UpdatePostAsync(newPost);
+            //await PostRepository.UpdatePostAsync(postId, newPost);
         }
 
-        public async Task DeletePost(Guid postId, Domain.Account.Account account)
+        //public async Task DeletePost(Guid postId, Domain.Account.Account account)
+        public async Task<IdentityResult> DeletePost(Guid postId)
         {
-            await PostRepository.DeletePostAsync(postId, account);
+            return await PostRepository.DeletePostAsync(postId);
         }
 
-        public IAsyncEnumerable<Domain.Post.Post> GetAll()
+        public IEnumerable<Domain.Post.Post> GetAll()
         {
             return PostRepository.GetAll();
         }
