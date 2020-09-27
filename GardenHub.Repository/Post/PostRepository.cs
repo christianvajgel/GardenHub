@@ -1,5 +1,4 @@
 ﻿using GardenHub.Domain.Post.Repository;
-using GardenHub.Repository.Account;
 using GardenHub.Repository.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +21,8 @@ namespace GardenHub.Repository.Post
 
         public IEnumerable<Domain.Post.Post> GetAll()
         {
-            //var r = Context.Posts.Include(x => x.Account).AsEnumerable();
-            //var r = Context.Posts.Include(x => x.Account).AsAsyncEnumerable();
-            return Context.Posts.Include(x => x.Account).AsEnumerable();
+            var r = Context.Posts.Include(x => x.Account).AsEnumerable();
+            return r;
         }
 
         // CREATE
@@ -42,7 +40,6 @@ namespace GardenHub.Repository.Post
         }
 
         // UPDATE
-        //public async Task<IdentityResult> UpdatePostAsync(Guid postId, Domain.Post.Post newPost)
         public async Task<IdentityResult> UpdatePostAsync(Domain.Post.Post newPost)
         {
             var oldPost = Context.Posts.FirstOrDefault(x => x.Id == newPost.Id);
@@ -52,7 +49,7 @@ namespace GardenHub.Repository.Post
                 oldPost.Image = null;
                 oldPost.AzureFilename = null;
             }
-            else 
+            else
             {
                 oldPost.Image = newPost.Image;
                 oldPost.AzureFilename = newPost.AzureFilename;
@@ -66,12 +63,9 @@ namespace GardenHub.Repository.Post
         }
 
         // DELETE
-        //public async Task<IdentityResult> DeletePostAsync(Guid postId, Domain.Account.Account account)
         public async Task<IdentityResult> DeletePostAsync(Guid postId)
         {
-            //var post = this.Context.Find<Domain.Post.Post>(postId);
             var post = FindById(postId);
-            //post.Account = account;
 
             if (post.Comments != null)
             {

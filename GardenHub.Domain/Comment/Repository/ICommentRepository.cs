@@ -7,11 +7,16 @@ namespace GardenHub.Domain.Comment.Repository
 {
     public interface ICommentRepository
     {
-        Task<IdentityResult> CreateCommentAsync(Domain.Comment.Comment comment);
-        Task<IdentityResult> UpdateCommentAsync(Guid id, Domain.Comment.Comment comment);
-        Task<GardenHub.Domain.Comment.Comment> FindByIdAsync(Guid commentId);
-        Task<IdentityResult> DeleteCommentAsync(Guid commentId);
-        IAsyncEnumerable<Domain.Comment.Comment> GetAll();
-        GardenHub.Domain.Comment.Comment FindById(Guid commentId);
+        Task<IdentityResult> CreateCommentAsync(Domain.Comment.Comment post);
+
+        Task<IdentityResult> UpdateCommentAsync(Guid postId, Domain.Comment.Comment newComment);
+
+        Task<IdentityResult> UpdateCommentAsync(Domain.Comment.Comment newComment);
+
+        Domain.Comment.Comment FindById(Guid id);
+
+        Task<IdentityResult> DeleteCommentAsync(Guid id);
+
+        IEnumerable<Domain.Comment.Comment> GetAll();
     }
 }

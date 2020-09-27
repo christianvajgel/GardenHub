@@ -31,7 +31,7 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
 
-            @if (Model.Type == GardenHub.Domain.Post.PostType.Image || Model.Type == GardenHub.Domain.Post.PostType.ImageText)
+            @if (Model.Type == "Image" || Model.Type == "ImageText")
             {
                 <div class="form-group">
                     <label>Image</label>
@@ -43,7 +43,7 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             }
-            else if (Model.Type == GardenHub.Domain.Post.PostType.Text)
+            else if (Model.Type == "Text")
             {
                 <div class="form-group">
                     <label asp-for="Description" class="control-label"></label>
@@ -51,17 +51,6 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             }
-
-            @*<div class="form-group">
-                <label>Image</label>
-                <input type="file" class="form-control" placeholder="file" name="file" id="file">
-            </div>*@
-
-            @*<div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>*@
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-outline-primary" />
@@ -72,7 +61,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Home" asp-controller="Post">Back to List</a>
 </div>
 
 @section Scripts {

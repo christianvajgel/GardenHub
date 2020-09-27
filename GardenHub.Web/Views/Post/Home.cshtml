@@ -15,7 +15,7 @@
     {
 
 
-        @if (post.Type == GardenHub.Domain.Post.PostType.Image || post.Type == GardenHub.Domain.Post.PostType.ImageText)
+        @if (post.Type == "Image" || post.Type == "ImageText")
         {
 
             <div class="card" style="width: 30rem;">
@@ -29,22 +29,78 @@
                     {
 
                         <div class="postContainer">
+
+                            <div class="postDivButtons">
+                                <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="New Comment" class="btn btn-outline-success" />
+                                </form>
+                            </div>
+
                             <div class="postDivButtons">
                                 <form method="get" asp-action="Edit" asp-controller="Post" asp-route-id="@post.Id">
                                     <input type="hidden" asp-for="@post.Id" />
                                     <input type="submit" value="Edit" class="btn btn-outline-warning" />
                                 </form>
-                                <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
-                                    <input type="hidden" asp-for="@post.Id" />
-                                    <input type="submit" value="CreateComment" class="btn btn-outline-warning" />
-                                </form>
                             </div>
+
                             <div class="postDivButtons">
                                 <form method="post" asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">
                                     <input type="hidden" asp-for="@post.Id" />
                                     <input type="submit" value="Delete" class="btn btn-outline-danger" />
                                 </form>
                             </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="postContainer">
+                            <div class="postDivButtons">
+                                <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="CreateComment" class="btn btn-outline-success" />
+                                </form>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        }
+        else if (post.Type == "Text")
+        {
+            <div class="card" style="width: 30rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => post.Description)</h5>
+                    <p class="card-text">@Html.DisplayFor(modelItem => post.Description)</p>
+                    @if (Model.Account.Id == post.Account.Id)
+                    {
+
+                        <div class="postContainer">
+
+                            <div class="postDivButtons">
+                                <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="CreateComment" class="btn btn-outline-success" />
+                                </form>
+                            </div>
+
+                            <div class="postDivButtons">
+                                <form method="get" asp-action="Edit" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="Edit" class="btn btn-outline-warning" />
+                                </form>
+                            </div>
+
+                            <div class="postDivButtons">
+                                <form method="post" asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">
+                                    <input type="hidden" asp-for="@post.Id" />
+                                    <input type="submit" value="Delete" class="btn btn-outline-danger" />
+                                </form>
+                            </div>
+
                         </div>
                     }
                     else
@@ -61,90 +117,6 @@
 
                 </div>
             </div>
-
         }
-        else if (post.Type == GardenHub.Domain.Post.PostType.Text)
-        {
-<div class="card" style="width: 30rem;">
-    <div class="card-body">
-        <h5 class="card-title">@Html.DisplayFor(modelItem => post.Description)</h5>
-        <p class="card-text">@Html.DisplayFor(modelItem => post.Description)</p>
-        @if (Model.Account.Id == post.Account.Id)
-        {
-
-            <div class="postContainer">
-                <div class="postDivButtons">
-                    <form method="get" asp-action="Edit" asp-controller="Post" asp-route-id="@post.Id">
-                        <input type="hidden" asp-for="@post.Id" />
-                        <input type="submit" value="Edit" class="btn btn-outline-warning" />
-                    </form>
-                    <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
-                        <input type="hidden" asp-for="@post.Id" />
-                        <input type="submit" value="CreateComment" class="btn btn-outline-warning" />
-                    </form>
-                </div>
-                <div class="postDivButtons">
-                    <form method="post" asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">
-                        <input type="hidden" asp-for="@post.Id" />
-                        <input type="submit" value="Delete" class="btn btn-outline-danger" />
-                    </form>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="postContainer">
-                <div class="postDivButtons">
-                    <form method="get" asp-action="CreateComment" asp-controller="Post" asp-route-id="@post.Id">
-                        <input type="hidden" asp-for="@post.Id" />
-                        <input type="submit" value="CreateComment" class="btn btn-outline-warning" />
-                    </form>
-                </div>
-            </div>
-        }
-
-    </div>
-</div>
-        }
-
-        <div class="form-group" style="display: inline-block !important; width: 30rem;">
-            <input class="form-control-sm" style="width: 85%;" type="text" placeholder="Comentário..." />
-            <a href="#" style="text-align: end !important;" class="btn-sm btn-outline-secondary">Enviar</a>
-        </div>
     }
-
 </div>
-
-@*
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Image)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Image)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    *@

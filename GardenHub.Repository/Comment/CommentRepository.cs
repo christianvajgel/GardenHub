@@ -19,15 +19,17 @@ namespace GardenHub.Repository.Comment
         }
 
 
-        public IAsyncEnumerable<Domain.Comment.Comment> GetAll()
+        public IEnumerable<Domain.Comment.Comment> GetAll()
         {
             //return Context.Posts.AsEnumerable();
-            return Context.Comments.Include(x => x.Post).AsAsyncEnumerable();
+            var r = Context.Comments.Include(x => x.Post).AsEnumerable();
+            return r;
         }
 
         // CREATE
         public async Task<IdentityResult> CreateCommentAsync(Domain.Comment.Comment comment)
         {
+            comment.Post = this.Context.Posts.FirstOrDefault(x => x.Id == comment.PostIdFromRoute);
             comment.Id = Guid.NewGuid();
             this.Context.Comments.Add(comment);
             await this.Context.SaveChangesAsync();
@@ -36,7 +38,7 @@ namespace GardenHub.Repository.Comment
 
         // READ
 
-        public async Task<GardenHub.Domain.Comment.Comment> FindByIdAsync(Guid commentId)
+        public async Task<Domain.Comment.Comment> FindByIdAsync(Guid commentId)
         {
             var comment = await this.Context.Comments.FirstOrDefaultAsync(x => x.Id == commentId);
             return comment;
@@ -59,6 +61,17 @@ namespace GardenHub.Repository.Comment
         }*/
 
         // UPDATE
+        public async Task<IdentityResult> UpdateCommentAsync(Domain.Comment.Comment newComment)
+        {
+            var oldComment = FindById(newComment.Id);
+
+            oldComment.Text = newComment.Text;
+
+            Context.Comments.Update(oldComment);
+            await this.Context.SaveChangesAsync();
+            return IdentityResult.Success;
+        }
+
         public async Task<IdentityResult> UpdateCommentAsync(Guid id, Domain.Comment.Comment newComment)
         {
             var oldComment = FindById(id);
@@ -74,12 +87,10 @@ namespace GardenHub.Repository.Comment
         public async Task<IdentityResult> DeleteCommentAsync(Guid id)
         {
             var commentToDelete = FindById(id);
-            
+
             this.Context.Comments.Remove(commentToDelete);
             await this.Context.SaveChangesAsync();
             return IdentityResult.Success;
         }
-
-
     }
 }

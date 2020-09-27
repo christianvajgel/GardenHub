@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GardenHub.Domain.Post;
 using GardenHub.Services.Post;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace GardenHub.API.Controllers
 {
+    //[Authorize]
     [Route("api/post")]
     [ApiController]
     public class PostController : ControllerBase
@@ -23,7 +22,7 @@ namespace GardenHub.API.Controllers
         }
 
         // GET: api/<PostController>
-        [HttpGet]
+        [HttpGet("get")]
         public IEnumerable<Post> Get()
         {
             return this.PostServices.GetAll();
@@ -38,6 +37,7 @@ namespace GardenHub.API.Controllers
 
         // POST api/<PostController>
         [HttpPost("create")]
+        //[HttpPost]
         public async Task<IdentityResult> Post([FromBody] Post post)
         {
             return await this.PostServices.SavePost(post);

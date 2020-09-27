@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GardenHub.Domain.Comment.Repository;
+using Microsoft.AspNetCore.Identity;
 
 namespace GardenHub.Services.Comment
 {
@@ -14,18 +15,12 @@ namespace GardenHub.Services.Comment
             this.CommentRepository = accountRepository;
         }
 
-        public async Task SaveComment(Domain.Comment.Comment comment)
+        public async Task<IdentityResult> SaveComment(Domain.Comment.Comment comment)
         {
-             await CommentRepository.CreateCommentAsync(comment);
+            return await CommentRepository.CreateCommentAsync(comment);
         }
 
-        public async Task FindByIdAsync(Guid idComment)
-        {
-            await CommentRepository.FindByIdAsync(idComment);
-        }
-
-       
-        public IAsyncEnumerable<Domain.Comment.Comment> GetAll()
+        public IEnumerable<Domain.Comment.Comment> GetAll()
         {
             return CommentRepository.GetAll();
         }
@@ -35,14 +30,19 @@ namespace GardenHub.Services.Comment
             return CommentRepository.FindById(idComment);
         }
 
-        public async Task DeleteComment(Guid commentId)
+        public async Task<IdentityResult> DeleteComment(Guid commentId)
         {
-            await CommentRepository.DeleteCommentAsync(commentId);
+            return await CommentRepository.DeleteCommentAsync(commentId);
+        }
+
+        public async Task<IdentityResult> EditComment(Domain.Comment.Comment newComment)
+        {
+            return await CommentRepository.UpdateCommentAsync(newComment);
         }
 
         public async Task EditComment(Guid commentId, Domain.Comment.Comment newComment)
         {
-            await CommentRepository.UpdateCommentAsync(commentId,newComment);
+            await CommentRepository.UpdateCommentAsync(commentId, newComment);
         }
     }
 }

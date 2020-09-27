@@ -1,26 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using GardenHub.CrossCutting.Storage;
+using GardenHub.Domain.Comment;
+using GardenHub.Domain.Post;
 using GardenHub.Services.Account;
 using GardenHub.Services.Comment;
 using GardenHub.Services.Post;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace GardenHub.Web.Controllers
 {
+    //[Authorize]
     public class CommentController : Controller
     {
         private IAccountService AccountService { get; set; }
         private IPostServices PostServices { get; set; }
         private ICommentServices CommentServices { get; set; }
 
-        private AzureStorage AzureStorage { get; set; }
-
-        public CommentController(IAccountService accountService, IPostServices postServices, ICommentServices commentServices, AzureStorage azureStorage)
-        //public PostController(IPostServices postServices)
+        public CommentController(IAccountService accountService, IPostServices postServices, ICommentServices commentServices)
         {
             this.AccountService = accountService;
 
@@ -28,9 +28,8 @@ namespace GardenHub.Web.Controllers
 
             this.CommentServices = commentServices;
 
-            this.AzureStorage = azureStorage;
-
         }
+
         // GET: Comment
         public ActionResult Index()
         {
@@ -66,11 +65,37 @@ namespace GardenHub.Web.Controllers
             }
         }
 
+        public Post GetPost(Guid postId)
+        {
+            var client = new RestClient();
+            var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
+            var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
+
+            var requestPost = new RestRequest("https://localhost:5003/api/post/" + postId);
+
+            requestPost.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
+
+            return client.Get<Post>(requestPost).Data;
+        }
+
+        public Comment GetComment(Guid commentId)
+        {
+            var client = new RestClient();
+            var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
+            var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
+
+            var requestComment = new RestRequest("https://localhost:5003/api/comment/" + commentId);
+
+            requestComment.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
+
+            return client.Get<Comment>(requestComment).Data;
+        }
+
         // GET: Comment/Edit/5
         public ActionResult Edit(Guid id)
         {
             var idComment = id;
-           
+
             return View(this.CommentServices.FindById(idComment));
         }
 
@@ -81,14 +106,42 @@ namespace GardenHub.Web.Controllers
         {
             try
             {
-                //var comment = this.CommentServices.FindById(id);
-                await CommentServices.EditComment(id, comment);
+                var commentFromDb = GetComment(comment.Id);
+                var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
+                var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
+                var post = GetPost(new Guid(commentFromDb.PostIdFromRoute.ToString()));
 
-                return Redirect("../../post/Home");
+                try
+                {
+                    var client = new RestClient();
+                    var requestComment = new RestRequest("https://localhost:5003/api/comment/edit/");
+                    requestComment.AddJsonBody(JsonConvert.SerializeObject(new
+                    {
+                        Id = commentFromDb.Id,
+                        Text = comment.Text
+                    }));
+                    requestComment.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
+
+                    await client.PutAsync<Comment>(requestComment);
+
+                    return RedirectToAction("Home", "Post");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Source);
+                    Console.WriteLine(ex.InnerException);
+                    Console.WriteLine(ex.StackTrace);
+                    return RedirectToAction("Home", "Post");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.StackTrace);
+                return RedirectToAction("Home", "Post");
             }
         }
 
@@ -101,19 +154,28 @@ namespace GardenHub.Web.Controllers
         // POST: Comment/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id, IFormCollection collection)
+        public async Task<ActionResult> DeleteComment([FromRoute] Guid id)
         {
             try
             {
-                var comment = this.CommentServices.FindById(id);
+                var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
+                var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
 
-                this.CommentServices.DeleteComment(id);
+                var client = new RestClient();
+                var requestComment = new RestRequest("https://localhost:5003/api/comment/delete/" + id);
+                requestComment.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
 
-                return Redirect("../../post/Home");
+                await client.DeleteAsync<Comment>(requestComment);
+
+                return RedirectToAction("Home", "Post");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.StackTrace);
+                return RedirectToAction("Home", "Post");
             }
         }
     }

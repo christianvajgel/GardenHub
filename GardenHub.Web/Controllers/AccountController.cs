@@ -138,7 +138,6 @@ namespace GardenHub.Web.Controllers
                 }
                 if (!String.IsNullOrWhiteSpace(returnUrl))
                     return Redirect(returnUrl);
-                //return Redirect("/");
                 return RedirectToAction("Home", "Post");
             }
             catch
@@ -166,21 +165,15 @@ namespace GardenHub.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Home()
         {
-            try 
+            try
             {
                 var user = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject")).ToString();
                 return View(await AccountService.FindById(new Guid(user)));
-            } 
-            catch 
+            }
+            catch
             {
                 return View("Login");
             }
-            
-            //if (user == null)
-            //{
-            //    Redirect("Login");
-            //}
-            
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using GardenHub.CrossCutting.Storage;
 using GardenHub.Domain.Account;
@@ -10,7 +9,6 @@ using GardenHub.Domain.Post;
 using GardenHub.Services.Account;
 using GardenHub.Services.Comment;
 using GardenHub.Services.Post;
-using GardenHub.Token.Service;
 using GardenHub.Web.ViewModel.Post;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +27,6 @@ namespace GardenHub.Web.Controllers
         private AzureStorage AzureStorage { get; set; }
 
         public PostController(IAccountService accountService, IPostServices postServices, ICommentServices commentServices, AzureStorage azureStorage)
-        //public PostController(IPostServices postServices)
         {
             this.AccountService = accountService;
 
@@ -41,7 +38,7 @@ namespace GardenHub.Web.Controllers
 
         }
 
-        public Account GetAccount() 
+        public Account GetAccount()
         {
             var client = new RestClient();
             var userId = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserId")).ToString();
@@ -55,7 +52,7 @@ namespace GardenHub.Web.Controllers
             return client.Get<Account>(requestAccount).Data;
         }
 
-        public Post GetPost(Guid postId) 
+        public Post GetPost(Guid postId)
         {
             var client = new RestClient();
             var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
@@ -80,21 +77,12 @@ namespace GardenHub.Web.Controllers
                 var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
                 var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
 
-
-                //var account = await this.AccountService.FindById(new Guid(user.ToString()));
-
-                //var requestAccount = new RestRequest("https://localhost:5003/api/account/" + user);
-                //requestAccount.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
-                //var accountResponse = client.Get<Account>(requestAccount).Data;
-
-                //var listAllPosts = this.PostServices.GetAll();
-                var requestPosts = new RestRequest("https://localhost:5003/api/post/");
+                var requestPosts = new RestRequest("https://localhost:5003/api/post/get");
                 requestPosts.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
                 var postsResponse = client.Get<IEnumerable<Post>>(requestPosts).Data;
 
-                if (postsResponse == null) { RedirectToAction("Home","Post"); }
+                if (postsResponse == null) { RedirectToAction("Home", "Post"); }
 
-                //await foreach (var post in postsResponse)
                 foreach (var post in postsResponse)
                 {
                     post.Account = account;
@@ -106,16 +94,13 @@ namespace GardenHub.Web.Controllers
                     Posts = posts,
                     Account = account
                 };
-                //this.PostServices.GetAll();
-                //return View(await AccountService.FindById(new Guid(user)));
                 return View(homeViewModel);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                return RedirectToAction("Login","Account");
+                return RedirectToAction("Login", "Account");
             }
-            //return View();
         }
 
         // GET: PostController/Create
@@ -127,14 +112,14 @@ namespace GardenHub.Web.Controllers
         // POST: PostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Create(Post post)
         public async Task<ActionResult> Create([FromForm] IFormFile? file, [FromForm] string description)
         {
             var post = new Post();
             string urlAzure = null;
+            string azureFilename = null;
 
-            post.Type = (file == null && !String.IsNullOrWhiteSpace(description)) ? PostType.Text :
-                        (file != null &&  String.IsNullOrWhiteSpace(description)) ? PostType.Image : PostType.ImageText;
+            post.Type = (file == null && !String.IsNullOrWhiteSpace(description)) ? "Text" :
+                        (file != null && String.IsNullOrWhiteSpace(description)) ? "Image" : "ImageText";
 
             if (file != null)
             {
@@ -155,7 +140,7 @@ namespace GardenHub.Web.Controllers
                     fileUpload.Close();
                 }
 
-                var azureFilename = $"{Guid.NewGuid().ToString().Replace("-", "")}.jpg";
+                azureFilename = $"{Guid.NewGuid().ToString().Replace("-", "")}.jpg";
                 post.AzureFilename = azureFilename;
 
                 urlAzure = await this.AzureStorage.SaveToStorage(ms.ToArray(), azureFilename);
@@ -166,8 +151,6 @@ namespace GardenHub.Web.Controllers
                 var client = new RestClient();
                 var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
                 var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
-
-                //account = await this.AccountService.FindById(new Guid(user.ToString()));
                 var account = GetAccount();
 
                 post.Description = description;
@@ -175,17 +158,34 @@ namespace GardenHub.Web.Controllers
                 post.Image = urlAzure;
                 post.Comments = null;
 
-                //await this.PostServices.SavePost(post);
-                var requestPost = new RestRequest("https://localhost:5003/api/post/create");
-                requestPost.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
-                var postResponse = await client.PostAsync<Post>(requestPost);
+                try
+                {
+                    var requestPost = new RestRequest("https://localhost:5003/api/post/create");
+                    requestPost.AddJsonBody(JsonConvert.SerializeObject(new
+                    {
+                        Image = post.Image,
+                        AzureFilename = post.AzureFilename,
+                        Description = post.Description,
+                        Type = post.Type,
+                        AccountEmail = email
+                    }));
+                    requestPost.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
+                    var postResponse = await client.PostAsync<Post>(requestPost);
 
-                return RedirectToAction("Home");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
+                return RedirectToAction("Home", "Post");
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.InnerException);
                 Console.WriteLine(ex.StackTrace);
-                return Redirect("/");
+                return RedirectToAction("Home", "Post");
             }
         }
 
@@ -209,7 +209,7 @@ namespace GardenHub.Web.Controllers
 
             try
             {
-                if (file == null && post.Type == PostType.Text)
+                if (file == null && post.Type == "Text")
                 {
                     post.Image = null;
                     post.AzureFilename = null;
@@ -235,7 +235,7 @@ namespace GardenHub.Web.Controllers
 
                     var azureFilename = $"{Guid.NewGuid().ToString().Replace("-", "")}.jpg";
                     var urlAzure = await this.AzureStorage.SaveToStorage(ms.ToArray(), azureFilename);
-                    
+
                     this.AzureStorage.DeleteBlob(post.AzureFilename);
                     post.Image = urlAzure;
                     post.AzureFilename = azureFilename;
@@ -257,19 +257,21 @@ namespace GardenHub.Web.Controllers
 
                 await client.PutAsync<Post>(requestAuthor);
 
-                return Redirect("/");
+                return RedirectToAction("Home", "Post");
             }
-            catch
+            catch (Exception ex)
             {
-                return Redirect("/");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.StackTrace);
+                return RedirectToAction("Home", "Post");
             }
         }
 
         // POST: PostController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Route("/Post/Home", Name = "Id")]
-        //public async Task<ActionResult> Delete([FromRoute] Guid postId)
         public async Task<ActionResult> Delete()
         {
             try
@@ -279,19 +281,13 @@ namespace GardenHub.Web.Controllers
                 var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
                 var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
 
-
-                //await this.PostServices.DeletePost(idFromRoute, account);
-
-                //await this.PostServices.DeletePost(idFromRoute, await this.AccountService.FindById(new Guid(JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject")).ToString())));
-
-
                 var client = new RestClient();
                 var requestPost = new RestRequest("https://localhost:5003/api/post/delete/" + post.Id);
                 requestPost.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
 
                 await client.DeleteAsync<Post>(requestPost);
 
-                if (post.Type == PostType.Image || post.Type == PostType.ImageText)
+                if (post.Type == "Image" || post.Type == "ImageText")
                 {
                     this.AzureStorage.DeleteBlob(post.AzureFilename);
                 }
@@ -307,25 +303,28 @@ namespace GardenHub.Web.Controllers
 
         public async Task<ActionResult> CreateCommentAsync()
         {
-            var user = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject")).ToString();
-            var idFromRoute = new Guid(RouteData.Values["id"].ToString());
-            var post = this.PostServices.FindById(idFromRoute);
-            var listAllComment = this.CommentServices.GetAll();
+            var client = new RestClient();
+            var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
+            var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
+
+            var post = GetPost(new Guid(RouteData.Values["id"].ToString()));
+
+            var requestComment = new RestRequest("https://localhost:5003/api/comment/get");
+            requestComment.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
+            var listAllComment = client.Get<IEnumerable<Comment>>(requestComment).Data;
+
             var comments = new List<Comment>();
-            var account = await this.AccountService.FindById(new Guid(user.ToString()));
+            var account = GetAccount();
 
-            if(listAllComment != null)
+            if (listAllComment != null)
             {
-
-            await foreach (var comment in listAllComment)
-            {
-                if(comment.Post.Id == post.Id)
+                foreach (var comment in listAllComment)
                 {
-                    comments.Add(comment);
+                    if (comment.PostIdFromRoute == post.Id)
+                    {
+                        comments.Add(comment);
+                    }
                 }
-                
-            }
-
             }
 
             var postViewModel = new PostViewModel()
@@ -345,18 +344,39 @@ namespace GardenHub.Web.Controllers
                 if (ModelState.IsValid == false)
                     return View(comment);
 
-                var account = new Account();
-                var user = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserObject"));
-                account = await this.AccountService.FindById(new Guid(user.ToString()));
-
-                var post = PostServices.FindById(id);
+                var account = GetAccount();
+                var post = GetPost(id);
 
                 comment.AccountOwnerId = account.Id;
-                comment.PostedTime = DateTime.UtcNow;
+                comment.PostedTime = DateTime.UtcNow.AddHours(-3);
                 comment.Post = post;
-                await CommentServices.SaveComment(comment);
 
-                return RedirectToAction("CreateComment");
+                var client = new RestClient();
+                var email = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserEmail")).ToString();
+                var password = JsonConvert.DeserializeObject(this.HttpContext.Session.GetString("UserPassword")).ToString();
+
+                try
+                {
+                    var requestPost = new RestRequest("https://localhost:5003/api/comment/create");
+                    requestPost.AddJsonBody(JsonConvert.SerializeObject(new
+                    {
+                        Text = comment.Text,
+                        AccountOwnerId = comment.AccountOwnerId,
+                        PostedTime = comment.PostedTime,
+                        PostIdFromRoute = post.Id
+                    }));
+                    requestPost.AddHeader("Authorization", "Bearer " + GardenHub.Token.Service.Token.Generate(email, password));
+                    var postResponse = await client.PostAsync<Comment>(requestPost);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Source);
+                    Console.WriteLine(ex.InnerException);
+                    Console.WriteLine(ex.StackTrace);
+                }
+                return RedirectToAction("CreateComment", "Post");
             }
             catch (System.Exception ex)
             {
@@ -381,6 +401,5 @@ namespace GardenHub.Web.Controllers
         {
             return RedirectToAction("Detail", "Comment");
         }
-
     }
 }
